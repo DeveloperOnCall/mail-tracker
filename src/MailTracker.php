@@ -38,7 +38,7 @@ class MailTracker implements \Swift_Events_SendListener
     {
         // Get the SentEmail object
         $headers = $message->getHeaders();
-        $hash = $headers->get('X-Mailer-Hash')->getFieldBody();
+        $hash = optional($headers->get('X-Mailer-Hash'))->getFieldBody();
         $sent_email = SentEmail::where('hash', $hash)->first();
 
         // Get info about the message-id from SES
@@ -124,8 +124,8 @@ class MailTracker implements \Swift_Events_SendListener
      */
     protected function createTrackers($message)
     {
-        foreach ($message->getTo() as $to_email=>$to_name) {
-            foreach ($message->getFrom() as $from_email=>$from_name) {
+        foreach ($message->getTo() as $to_email => $to_name) {
+            foreach ($message->getFrom() as $from_email => $from_name) {
                 $headers = $message->getHeaders();
                 if ($headers->get('X-No-Track')) {
                     // Don't send with this header
@@ -156,19 +156,19 @@ class MailTracker implements \Swift_Events_SendListener
                 }
 
                 $tracker = SentEmail::create([
-                    'hash'=>$hash,
-                    'headers'=>$headers->toString(),
-                    'sender'=>$from_name." <".$from_email.">",
-                    'recipient'=>$to_name.' <'.$to_email.'>',
-                    'subject'=>$subject,
-                    'content'=> config('mail-tracker.log-content', true) ? (strlen($original_content) > 65535 ? substr($original_content, 0, 65532) . "..." : $original_content) : null,
-                    'opens'=>0,
-                    'clicks'=>0,
-                    'message_id'=>$message->getId(),
-                    'meta'=>[],
+                    'hash' => $hash,
+                    'headers' => $headers->toString(),
+                    'sender' => $from_name." <".$from_email.">",
+                    'recipient' => $to_name.' <'.$to_email.'>',
+                    'subject' => $subject,
+                    'content' => config('mail-tracker.log-content', true) ? (strlen($original_content) > 65535 ? substr($original_content, 0, 65532) . "..." : $original_content) : null,
+                    'opens' => 0,
+                    'clicks' => 0,
+                    'message_id' => $message->getId(),
+                    'meta' => [],
                 ]);
 
-                Event::fire(new EmailSentEvent($tracker));
+                Event::dispatch(new EmailSentEvent($tracker));
             }
         }
     }
