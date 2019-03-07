@@ -216,7 +216,7 @@ class AddressVerificationTest extends TestCase
             $message->subject($subject);
 
             $message->priority(3);
-
+          
             $message->getHeaders()->addTextHeader('X-No-Track', Str::random(10));
         });
 
@@ -234,7 +234,7 @@ class AddressVerificationTest extends TestCase
     public function testPing()
     {
         $track = \jdavidbakr\MailTracker\Model\SentEmail::create([
-                'hash' => Str::random(32),
+          'hash' => Str::random(32),
             ]);
 
         Event::fake();
@@ -254,7 +254,7 @@ class AddressVerificationTest extends TestCase
     public function testLink()
     {
         $track = \jdavidbakr\MailTracker\Model\SentEmail::create([
-                'hash' => Str::random(32),
+             hash' => Str::random(32),
             ]);
 
         Event::fake();
@@ -297,7 +297,7 @@ class AddressVerificationTest extends TestCase
     {
         $this->disableExceptionHandling();
         $url = action('\jdavidbakr\MailTracker\MailTrackerController@getL', [
-            Str::random(32),
+             Str::random(32),
             'the-mail-hash',
         ]);
 
@@ -461,7 +461,7 @@ class AddressVerificationTest extends TestCase
     public function it_processes_a_delivery()
     {
         $track = \jdavidbakr\MailTracker\Model\SentEmail::create([
-                'hash' => Str::random(32),
+               'hash' => Str::random(32),
             ]);
         $message_id = Str::random(32);
         $track->message_id = $message_id;
@@ -575,7 +575,6 @@ class AddressVerificationTest extends TestCase
         Event::fake();
         $track = \jdavidbakr\MailTracker\Model\SentEmail::create([
                 'hash' => Str::random(32),
-            ]);
         $message_id = Str::random(32);
         $track->message_id = $message_id;
         $track->save();

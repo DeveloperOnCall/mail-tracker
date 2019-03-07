@@ -64,7 +64,8 @@ class MailTracker implements \Swift_Events_SendListener
     protected function injectTrackingPixel($html, $hash)
     {
         // Append the tracking url
-        $tracking_pixel = '<img border=0 width=1 alt="" height=1 src="'.route('mailTracker_t', [$hash]).'" />';
+        //$tracking_pixel = '<img border=0 width=1 alt="" height=1 src="'.route('mailTracker_t', [$hash]).'" />';
+        $tracking_pixel = '<img border=0 width=1 alt="" height=1 src="'.config('angie.full_url').'/email/t/'.$hash.'" />';
 
         $linebreak = Str::random(32);
         $html = str_replace("\n", $linebreak, $html);
@@ -95,7 +96,8 @@ class MailTracker implements \Swift_Events_SendListener
     protected function inject_link_callback($matches)
     {
         if (empty($matches[2])) {
-            $url = app()->make('url')->to('/');
+            //$url = app()->make('url')->to('/');
+            $url = config('angie.full_url').'/';//app()->make('url')->to('/');
         } else {
             $url = str_replace('&amp;', '&', $matches[2]);
         }
