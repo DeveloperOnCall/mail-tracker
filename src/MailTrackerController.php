@@ -31,7 +31,7 @@ class MailTrackerController extends Controller
         if ($tracker) {
             $tracker->opens++;
             $tracker->save();
-            Event::fire(new ViewEmailEvent($tracker));
+            Event::dispatch(new ViewEmailEvent($tracker));
         }
 
         return $response;
@@ -40,6 +40,9 @@ class MailTrackerController extends Controller
     public function getL($url, $hash)
     {
         $url = base64_decode(str_replace("$", "/", $url));
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            throw new Exceptions\BadUrlLink('Mail hash: '.$hash);
+        }
         $tracker = Model\SentEmail::where('hash', $hash)
             ->first();
         if ($tracker) {
@@ -56,7 +59,7 @@ class MailTrackerController extends Controller
                     'hash' => $tracker->hash,
                 ]);
             }
-            Event::fire(new LinkClickedEvent($tracker));
+            Event::dispatch(new LinkClickedEvent($tracker));
         }
 
         return redirect($url);
